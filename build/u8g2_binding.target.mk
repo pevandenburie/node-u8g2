@@ -95,8 +95,7 @@ INCS_Release := \
 	-I/Users/paulvand/.node-gyp/4.4.7/deps/v8/include
 
 OBJS := \
-	$(obj).target/$(TARGET)/u8g2/csrc/*.o \
-	$(obj).target/$(TARGET)/u8g2/cppsrc/*.o
+	$(obj).target/$(TARGET)/u8g2/u8g2_ard_EDISON_t2.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)

@@ -1,5 +1,6 @@
 
+Clone this repository, then:
 
-    $ npm install node-gyp
-    $ ./node_modules/node-gyp/bin/node-gyp.js rebuild
-
+    $ cd node-u8g2/
+    $ npm install         # This will rebuild the project
+    $ node test/test.js   # Something will appear on your screen

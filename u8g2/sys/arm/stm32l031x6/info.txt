@@ -1,0 +1,118 @@
+
+STM32L0	Cortex-M0/M0+
+  STM32L0x1	access line
+    STM32L0x1K	access line, 32 Pins (LQFP)
+    STM32L0x1F	access line, 20 Pins (TSSOP20)
+  STM32L0x2	USB+DAC
+STM32L1	Cortex-M3
+STM32L4	Cortex-M4
+
+http://www.st.com/en/microcontrollers/stm32l031f6.html
+
+=========
+
+http://www.st.com/en/embedded-software/stm32cube-embedded-software.html
+
+zip file: ~/Downloads/en.stm32cubel0.zip
+
+this contains the lib, 
+STM32Cube_FW_L0_V1.8.0/Drivers/STM32L0xx_HAL_Driver
+
+however the lib requires a config file.
+example is here:
+STM32Cube_FW_L0_V1.8.0/Projects/STM32L011K4-Nucleo/Examples/GPIO/GPIO_IOToggle/Inc
+
+startup code (.s files)
+STM32Cube_FW_L0_V1.8.0/Drivers/CMSIS/Device/ST/STM32L0xx/Source/Templates/gcc
+
+register definitions:
+STM32Cube_FW_L0_V1.8.0/Drivers/CMSIS/Device/ST/STM32L0xx/Include
+
+STM32L031xNyM
+3: RAM size? 8KB
+x: K=32 pins, F=20 pins
+N: 4=16KB, 6=32KB
+y: T=LQFP? 
+M: temperature range
+
+STM32L031F6P6	TSSOP20, 32K Flash --> available
+STM32L052K8T6	LQFP32, 64K Flash, USB --> available
+
+
+
+
+--> ld file for example here:
+
+./STM32Cube_FW_L0_V1.8.0/Projects/STM32L031K6-Nucleo/Templates_LL/SW4STM32/STM32L031K6_NUCLEO/STM32L031K6Tx_FLASH.ld
+however newly created and derived from nokeep.ld script
+
+
+
+library/hal/CMSIS
+  kchmviewer STM32Cube_FW_L0_V1.8.0/Drivers/STM32L0xx_HAL_Driver/STM32L073xx_User_Manual.chm
+    doxygen seiten der hal treiber.... leider wie üblich nicht besonders übersichtlich
+
+
+Code					Source
+startup_stm32l031xx.s		STM32Cube_FW_L0_V1.8.0/Drivers/CMSIS/Device/ST/STM32L0xx/Source/Templates/gcc
+	startup code, which will also call SystemInit and main()
+system_stm32l0xx.c			STM32Cube_FW_L0_V1.8.0/Drivers/CMSIS/Device/ST/STM32L0xx/Source/Templates
+	Contains the SystemInit() and SystemCoreClockUpdate() function.
+	
+system_stm32l0xx.h			STM32Cube_FW_L0_V1.8.0/Drivers/CMSIS/Device/ST/STM32L0xx/Include
+	Contains the global defs for system_stm32l0xx.c. It is placed in the common/inc
+	
+stm32l0xx/inc				various include files copied from
+      STM32Cube_FW_L0_V1.8.0/Drivers/CMSIS/Device/ST/STM32L0xx/Include/
+      STM32Cube_FW_L0_V1.8.0/Drivers/CMSIS/Include/
+	
+Documentation
+PM0223	STM32L0 Series Cortex ® -M0+ programming manual 	DM01004451.pdf	110 pages
+RM0377	STM32L0x1 Reference manual						DM01008282.pdf	882 pages
+  - Section 3.3.2: BOOT0 Pin (0=user, 1=bootloader)	
+STM32L031x4 STM32L031x6 Datasheet						DM00140359.pdf	118 pages
+AN2606	Bootloader description							CD00167594.pdf
+  USART2 configuration is: 8-bits, even parity and 1 Stop bit, RX/TX on PA9/PA10 or PA2/PA3
+  Die doku ist da nicht ganz eindeutig. PA10 und PA3 sind die UART2_RX pins, PA9  und PA2 die TX
+AN3155	USART protocol used in the STM32™ bootloader
+
+External tools (Ubuntu Linux)
+arm-none-eabi-gcc	sudo apt install gcc-arm-none-eabi
+stm32flash		sudo apt install stm32flash
+  
+
+stm32flash: There seems to be a problem with ch340/ch341 devices
+  https://sourceforge.net/p/stm32flash/tickets/81/?limit=25&page=1#7106
+  also mentioned here:
+    https://sourceforge.net/p/stm32flash/wiki/Hints/
+  I think this got solved in the kernel by a commit on Oct 24, 2016:
+    https://github.com/torvalds/linux/commit/ba781bdf86621b71aa79a1ac0ad584f1e8aac307#diff-27cbcff3aa65aa3cda4aef10b416dd24
+    
+  modinfo ch341  -->  4.4.0-62-generic
+  https://github.com/torvalds/linux/blob/v4.4/drivers/usb/serial/ch341.c --> Tag 4.4
+  looks like this moved to the kernel with the 4.10 tag
+  Ubuntu kernel version ermitteln: cat /proc/version
+  Ubuntu 17.04 may use 4.10 and might be there at 13 Apr 2017
+  ok, i will be using a cp21xx driver here...
+  Conclution: Support of CH340 usb-serial converter for ubuntu linux will be there with Ubunutz 17.04
+
+===========
+
+steampunk
+
+http://www.rattlebrained.org/articles/diy-pvc-train-whistle
+
+
+Kupferrohre:
+https://www.bengs-modellbau.de/zubehoerteile/flasche-und-fittings/
+90 grad fitting
+Auch nicht schlecht:
+https://knupfer.info/shop/index.php/deutsch/profile-rohre/kupferrohr.html
+
+===========
+
+TODO, 17 Apr 2017
+- Pullups an die buttons und die tamper pullups deaktivieren. 
+  Grund: Ansonsten kann man nicht mehr per reset booten und flashen
+- Es wird ja ständig das power interface sowie RTC activiert und deaktiviert.
+  Das sollte man vermutlich dauerhaft aktiviert lassen.  --> DONE

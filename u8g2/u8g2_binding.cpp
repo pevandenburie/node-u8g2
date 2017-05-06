@@ -11,12 +11,6 @@ using v8::Object;
 using v8::String;
 using v8::Value;
 
-// pin setup
-int _din = 1;
-int _sclk = 0;
-int _dc = 2;
-int _rst = 4;
-int _cs = 3;
 
 // lcd contrast
 //may be need modify to fit your screen!  normal: 30- 90 ,default is:45 !!!maybe modify this value!
